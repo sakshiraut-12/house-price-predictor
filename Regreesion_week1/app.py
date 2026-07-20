@@ -2,24 +2,12 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import os
-import base64
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-
-# ============================================================
-# Helper: embed a local image as an inline <img> tag (for use inside HTML strings)
-# ============================================================
-def money_icon_tag(size=22):
-    with open("money_icon.png", "rb") as f:
-        encoded = base64.b64encode(f.read()).decode()
-    return f'<img src="data:image/png;base64,{encoded}" width="{size}" style="vertical-align:middle; margin-right:4px;">'
-
-MONEY_ICON = money_icon_tag()
-MONEY_ICON_SM = money_icon_tag(16)
 
 # ============================================================
 # Page config + fonts + custom styling
@@ -153,7 +141,7 @@ k1, k2, k3, k4 = st.columns(4)
 with k1:
     st.markdown(f'<div class="kpi-card"><h3>🏠 {len(df):,}</h3><p>Homes in Dataset</p></div>', unsafe_allow_html=True)
 with k2:
-    st.markdown(f'<div class="kpi-card"><h3>{MONEY_ICON}${df["SalePrice"].median():,.0f}</h3><p>Median Price</p></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="kpi-card"><h3>💵 ${df["SalePrice"].median():,.0f}</h3><p>Median Price</p></div>', unsafe_allow_html=True)
 with k3:
     st.markdown(f'<div class="kpi-card"><h3>📊 ${df["SalePrice"].min():,.0f}–${df["SalePrice"].max():,.0f}</h3><p>Price Range</p></div>', unsafe_allow_html=True)
 with k4:
@@ -189,9 +177,7 @@ with input_col:
         m = metrics[model_choice]
         mc1, mc2, mc3 = st.columns(3)
         mc1.metric("📈 R² Score", f"{m['R2']:.3f}")
-        mc2.markdown(f'<p style="font-size:0.8rem; color:#888; margin-bottom:0;">{MONEY_ICON_SM}MAE</p>'
-                     f'<p style="font-size:1.4rem; font-weight:600; margin-top:0;">${m["MAE"]:,.0f}</p>',
-                     unsafe_allow_html=True)
+        mc2.metric("💰 MAE", f"${m['MAE']:,.0f}")
         mc3.metric("📉 RMSE", f"${m['RMSE']:,.0f}")
         st.caption("Metrics calculated on a held-out 20% test set from the Ames Housing dataset.")
 
@@ -206,7 +192,7 @@ with result_col:
     st.subheader("💰 Estimated Price")
     st.markdown(f"""
     <div class="price-box">
-        <p>{MONEY_ICON}Predicted Sale Price ({model_choice})</p>
+        <p>💵 Predicted Sale Price ({model_choice})</p>
         <h1>${prediction:,.0f}</h1>
         <p>📈 Higher than {percentile:.0f}% of homes in the dataset</p>
     </div>
